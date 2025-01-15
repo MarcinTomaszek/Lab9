@@ -1,0 +1,18 @@
+﻿@model WebApplication1.Models.Movies.KeywordCreateForm
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<form asp-action="CreateKeyword"  method="post">
+    <div class="form-group">
+        <label asp-for="Keyword" class="control-label"></label>
+        <input asp-for="Keyword" name="Keyword" class="form-control"/>
+        <span asp-validation-for="Keyword" class="text-danger"></span>
+    </div>
+    <br>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary p-2">Add new Keyword</button>
+    </div>
+</form>

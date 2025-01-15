@@ -306,9 +306,9 @@ public partial class MoviesDbContext : DbContext
 
         modelBuilder.Entity<MovieKeyword>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("movie_keywords");
+            modelBuilder.Entity<MovieKeyword>()
+                .HasKey(mk => new { mk.MovieId, mk.KeywordId });
+                entity.ToTable("movie_keywords");
 
             entity.Property(e => e.KeywordId)
                 .HasDefaultValueSql("NULL")
@@ -400,6 +400,8 @@ public partial class MoviesDbContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
+    
+    
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

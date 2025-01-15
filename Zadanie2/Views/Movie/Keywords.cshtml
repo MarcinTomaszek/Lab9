@@ -1,8 +1,17 @@
-﻿@model dynamic
-
+﻿@model System.Collections.Generic.List<WebApplication1.Models.Movies.KeywordsViewModel>
 @{
-    ViewBag.Title = "title";
-    Layout = "_Layout";
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>title</h2>
+<h1>Keywords List</h1>
+
+@foreach (var item in Model) {
+    <card class="btn btn-primary "> @Html.DisplayFor(modelItem => item.Keyword) </card>   
+}
+
+<a class="btn btn-primary p-2"  asp-action="CreateKeyword">Add new Keyword</a>
+
+
+        
+   

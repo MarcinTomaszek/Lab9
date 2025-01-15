@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WebApplication1.Models.Movies;
 
-public class MovieView
+public class MovieViewModel
 {
     public int company_id;
     public string company_name;

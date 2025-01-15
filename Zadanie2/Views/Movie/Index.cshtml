@@ -1,4 +1,4 @@
-@model System.Collections.Generic.List<WebApplication1.Models.Movies.MovieView>
+@model System.Collections.Generic.List<WebApplication1.Models.Movies.MovieViewModel>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -32,38 +32,6 @@
             <td>
                 @Html.DisplayFor(modelItem => item.company_budget)
             </td>
-            @* <td> *@
-            @*     @Html.DisplayFor(modelItem => item.Overview) *@
-            @* </td> *@
-            @* <td> *@
-            @*     @Html.DisplayFor(modelItem => item.Popularity) *@
-            @* </td> *@
-            @* <td> *@
-            @*     @Html.DisplayFor(modelItem => item.ReleaseDate) *@
-            @* </td> *@
-            @* <td> *@
-            @*     @Html.DisplayFor(modelItem => item.Revenue) *@
-            @* </td> *@
-            @* <td> *@
-            @*     @Html.DisplayFor(modelItem => item.Runtime) *@
-            @* </td> *@
-            @* <td> *@
-            @*     @Html.DisplayFor(modelItem => item.MovieStatus) *@
-            @* </td> *@
-            @* <td> *@
-            @*     @Html.DisplayFor(modelItem => item.Tagline) *@
-            @* </td> *@
-            @* <td> *@
-            @*     @Html.DisplayFor(modelItem => item.VoteAverage) *@
-            @* </td> *@
-            @* <td> *@
-            @*     @Html.DisplayFor(modelItem => item.VoteCount) *@
-            @* </td> *@
-            @* <td> *@
-            @*     <a asp-action="Edit" asp-route-id="@item.MovieId">Edit</a> | *@
-            @*     <a asp-action="Details" asp-route-id="@item.MovieId">Details</a> | *@
-            @*     <a asp-action="Delete" asp-route-id="@item.MovieId">Delete</a> *@
-            @* </td> *@
         </tr>
 }
     </tbody>

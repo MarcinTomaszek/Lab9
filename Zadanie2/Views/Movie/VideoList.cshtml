@@ -1,10 +1,10 @@
-﻿@model System.Collections.Generic.List<WebApplication1.Models.Movies.VideoListView>
+﻿@model System.Collections.Generic.List<WebApplication1.Models.Movies.VideoListViewModel>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@Html.DisplayFor(m=>Model[0].comp_name) Movies</h1>
+<h1>"@Html.DisplayFor(m=>Model[0].comp_name)" Movies</h1>
 <table class="table">
     <thead>
         <tr>
@@ -53,7 +53,7 @@
                 @Html.DisplayFor(modelItem => item.votes_count)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.movie_id">Keywords</a> 
+                <a asp-action="Keywords" asp-route-movie_id="@item.movie_id ">Keywords</a>
             </td>
         </tr>
 }

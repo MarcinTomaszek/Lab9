@@ -13,6 +13,7 @@ namespace WebApplication1.Controllers
     public class MovieController : Controller
     {
         private readonly MoviesDbContext _context;
+        public static int? movie_idToUpdate;
 
         public MovieController(MoviesDbContext context)
         {
@@ -28,7 +29,7 @@ namespace WebApplication1.Controllers
                 join productionCompany in _context.ProductionCompanies on movieCompany.CompanyId equals productionCompany.CompanyId into productionGroup
                 from productionCompany in productionGroup.DefaultIfEmpty() // LEFT JOIN
                 group new { movie, productionCompany } by new { productionCompany.CompanyId, productionCompany.CompanyName } into grouped // Group by both CompanyId and CompanyName
-                select new MovieView()
+                select new MovieViewModel()
                 {
                     company_id = grouped.Key.CompanyId, 
                     company_name = grouped.Key.CompanyName,
@@ -50,7 +51,7 @@ namespace WebApplication1.Controllers
                     (movie, movieCompany) => new { Movie = movie, MovieCompany = movieCompany } 
                 )
                 .Where(joined => joined.MovieCompany.CompanyId == company_id) 
-                .Select(joined => new VideoListView
+                .Select(joined => new VideoListViewModel
                 {
                     title = joined.Movie.Title,
                     popularity = joined.Movie.Popularity,
@@ -69,10 +70,81 @@ namespace WebApplication1.Controllers
         
         public async Task<IActionResult> Keywords(int? movie_id)
         {
+            if(movie_id is not null)
+                movie_idToUpdate = movie_id;
             
+            var query = _context.Movies
+                .Join(
+                    _context.MovieKeywords, 
+                    movie => movie.MovieId, 
+                    movieKeyword => movieKeyword.MovieId,
+                    (movie, movieKeyword) => new { movie, movieKeyword }
+                )
+                .Join(
+                    _context.Keywords,
+                    combined => combined.movieKeyword.KeywordId,
+                    keyword => keyword.KeywordId,
+                    (combined, keyword) => new { combined.movie, keyword }
+                )
+                .Where(result => result.movie.MovieId == movie_idToUpdate)
+                .Select(result => new KeywordsViewModel(){Keyword = result.keyword.KeywordName, Movie_id = movie_idToUpdate})
+                .ToList();
             
+            return View(query);
+        }
+        
+        public IActionResult CreateKeyword()
+        {
+            return View(new KeywordCreateForm());
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> CreateKeyword(KeywordCreateForm model)
+        {
+            if (ModelState.IsValid)
+            {
+                var maxId = await _context.Keywords.MaxAsync(g => (int?)g.KeywordId) ?? 0;
+
+                 _context.Keywords.Add(new Keyword
+                {
+                    KeywordId = maxId+1,
+                    KeywordName = model.Keyword
+                });
+
+
+                _context.MovieKeywords.Add(new MovieKeyword
+                {
+                    MovieId = movie_idToUpdate,
+                    KeywordId = maxId + 1
+                });
+                
+                await _context.SaveChangesAsync();
+                
+                var query = _context.Movies
+                    .Join(
+                        _context.MovieKeywords, 
+                        movie => movie.MovieId, 
+                        movieKeyword => movieKeyword.MovieId,
+                        (movie, movieKeyword) => new { movie, movieKeyword }
+                    )
+                    .Join(
+                        _context.Keywords,
+                        combined => combined.movieKeyword.KeywordId,
+                        keyword => keyword.KeywordId,
+                        (combined, keyword) => new { combined.movie, keyword }
+                    )
+                    .Where(result => result.movie.MovieId == movie_idToUpdate)
+                    .Select(result => new KeywordsViewModel(){Keyword = result.keyword.KeywordName, Movie_id = movie_idToUpdate})
+                    .ToList();
+
+                
+                return View("Keywords",query);
+            }
             return View();
         }
+
+        
+        
 
         // GET: MovieControler/Details/5
         public async Task<IActionResult> Details(int? id)

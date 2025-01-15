@@ -1,6 +1,6 @@
 ﻿namespace WebApplication1.Models.Movies;
 
-public class VideoListView
+public class VideoListViewModel
 {
     public string title;
     public double? popularity;
