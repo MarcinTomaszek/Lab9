@@ -22,30 +22,56 @@ namespace WebApplication1.Controllers
         // GET: MovieControler
         public async Task<IActionResult> Index(int page =1 , int size =20)
         {
-            //  var model =  _context.ProductionCompanies.OrderBy(e => e.CompanyName).
-            // var model = 
-            //
-            // return View(model);
-            var data = await _context.Movies.Join(_context.MovieCompanies,
-                m => m.MovieId,
-                mc => mc.MovieId,
-                (m, mc) => new { m, mc })
-                .Join(_context.ProductionCompanies,
-                    combined=>combined.mc.CompanyId,
-                    pc=>pc.CompanyId,
-                    (combined,pc)=>new MovieView()
-                    {
-                        company_name = pc.CompanyName,
-                        movies_count = _context.MovieCompanies.Where(c=>c.CompanyId==pc.CompanyId).Count(),
-                        company_budget = "12"
-                    }).Distinct()
-                .OrderBy(e=>e.company_name).AsNoTracking().ToListAsync();
-                // .OrderBy(e=>e.company_name).Skip((page-1)*size).Take(size).AsNoTracking().ToListAsync();
-   
+            var query = 
+                from movie in _context.Movies
+                join movieCompany in _context.MovieCompanies on movie.MovieId equals movieCompany.MovieId
+                join productionCompany in _context.ProductionCompanies on movieCompany.CompanyId equals productionCompany.CompanyId into productionGroup
+                from productionCompany in productionGroup.DefaultIfEmpty() // LEFT JOIN
+                group new { movie, productionCompany } by new { productionCompany.CompanyId, productionCompany.CompanyName } into grouped // Group by both CompanyId and CompanyName
+                select new MovieView()
+                {
+                    company_id = grouped.Key.CompanyId, 
+                    company_name = grouped.Key.CompanyName,
+                    movies_count = grouped.Count(g => g.movie != null),
+                    company_budget = grouped.Sum(g => (long)g.movie.Budget) 
+                };
+            var resultList = query.ToList();
             
-            return View(data);
+            return View(resultList);
+        }
+        
+        public async Task<IActionResult> VideoList(int? company_id, string? company_name)
+        {
+            var query = _context.Movies
+                .Join(
+                    _context.MovieCompanies,
+                    movie => movie.MovieId, 
+                    movieCompany => movieCompany.MovieId, 
+                    (movie, movieCompany) => new { Movie = movie, MovieCompany = movieCompany } 
+                )
+                .Where(joined => joined.MovieCompany.CompanyId == company_id) 
+                .Select(joined => new VideoListView
+                {
+                    title = joined.Movie.Title,
+                    popularity = joined.Movie.Popularity,
+                    revenue = joined.Movie.Revenue,
+                    runtime = joined.Movie.Runtime,
+                    votes_avg = joined.Movie.VoteAverage,
+                    votes_count = joined.Movie.VoteCount,
+                    comp_name = company_name,
+                    movie_id = joined.Movie.MovieId
+                    
+                });
+            var resultList = query.ToList();
             
-            // return View(await _context.Movies.OrderBy(e=>e.Title).Skip((page-1)*size).Take(size).AsNoTracking().ToListAsync());
+            return View(resultList);
+        }
+        
+        public async Task<IActionResult> Keywords(int? movie_id)
+        {
+            
+            
+            return View();
         }
 
         // GET: MovieControler/Details/5
@@ -71,6 +97,8 @@ namespace WebApplication1.Controllers
         {
             return View();
         }
+        
+        
 
         // POST: MovieControler/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.

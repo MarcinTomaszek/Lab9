@@ -1,0 +1,61 @@
+﻿@model System.Collections.Generic.List<WebApplication1.Models.Movies.VideoListView>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@Html.DisplayFor(m=>Model[0].comp_name) Movies</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Popularity
+            </th>
+            <th>
+                Revenue
+            </th>
+            <th>
+                Runtime
+            </th>
+            <th>
+                Average Vote
+            </th>
+            <th>
+                Number of Votes
+            </th>
+            <th>
+                
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.title)
+            </td>
+            <td>
+               @Html.DisplayFor(modelItem => item.popularity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.revenue)
+            </td>
+            <td>
+               @Html.DisplayFor(modelItem => item.runtime)
+            </td>
+            <td>
+               @Html.DisplayFor(modelItem => item.votes_avg)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.votes_count)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.movie_id">Keywords</a> 
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

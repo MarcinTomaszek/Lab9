@@ -4,11 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
-
-@* <p> *@
-@*     <a asp-action="Create">Create New</a> *@
-@* </p> *@
+<h1>Company List</h1>
 <table class="table">
     <thead>
         <tr>
@@ -21,33 +17,6 @@
              <th>
                  Summed Budget of all Releases
              </th>
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.Overview) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.Popularity) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.ReleaseDate) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.Revenue) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.Runtime) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.MovieStatus) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.Tagline) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.VoteAverage) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.VoteCount) *@
-@*             </th> *@
             <th></th>
         </tr>
     </thead>
@@ -58,7 +27,7 @@
                 @Html.DisplayFor(modelItem => item.company_name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.movies_count)
+                <a asp-action="VideoList" asp-route-company_id="@item.company_id" asp-route-company_name="@item.company_name"> @Html.DisplayFor(modelItem => item.movies_count)</a>  
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.company_budget)
