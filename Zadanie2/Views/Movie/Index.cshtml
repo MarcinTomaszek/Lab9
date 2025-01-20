@@ -1,27 +1,28 @@
-@model System.Collections.Generic.List<WebApplication1.Models.Movies.MovieViewModel>
+@model WebApplication1.Models.Movies.MovieViewModel
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
 <h1>Company List</h1>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                Company Name
-            </th>
-             <th>
-                 Number of Films Released
-             </th>
-             <th>
-                 Summed Budget of all Releases
-             </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            Company Name
+        </th>
+        <th>
+            Number of Films Released
+        </th>
+        <th>
+            Summed Budget of all Releases
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model.MovieModels) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.company_name)
@@ -33,7 +34,46 @@
                 @Html.DisplayFor(modelItem => item.company_budget)
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
 
+<div class="pagination">
+    @if (Model.total_pages > 1)
+    {
+        <a href="@Url.Action("Index", new { page = 1 })">Początek</a>
+
+        @if (Model.current_page > 1)
+        {
+            <a href="@Url.Action("Index", new { page = Model.current_page - 1 })">Poprzednia</a>
+        }
+
+        int maxPagesToShow = 5;
+        int startPage = Math.Max(1, Model.current_page - 2);
+        int endPage = Math.Min(Model.total_pages, startPage + maxPagesToShow - 1);
+
+        for (int i = startPage; i <= endPage; i++)
+        {
+            if (i == Model.current_page)
+            {
+                <span class="current-page">@i</span>
+            }
+            else
+            {
+                <a href="@Url.Action("Index", new { page = i })">@i</a>
+            }
+        }
+
+        if (endPage < Model.total_pages)
+        {
+            <a href="@Url.Action("Index", new { page = Model.total_pages })">@Model.total_pages</a>
+        }
+
+        @if (Model.current_page < Model.total_pages)
+        {
+            <a href="@Url.Action("Index", new { page = Model.current_page + 1 })">Następna</a>
+        }
+
+        <a href="@Url.Action("Index", new { page = Model.total_pages })">Ostatnia</a>
+    }
+</div>

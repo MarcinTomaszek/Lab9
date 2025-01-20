@@ -14,6 +14,9 @@ namespace WebApplication1.Controllers
     {
         private readonly MoviesDbContext _context;
         public static int? movie_idToUpdate;
+        public static int? company_id_curr;
+        public static string? company_name_curr;
+        public int size = 20;
 
         public MovieController(MoviesDbContext context)
         {
@@ -21,7 +24,7 @@ namespace WebApplication1.Controllers
         }
 
         
-        public async Task<IActionResult> Index(int page =1 , int size =20)
+        public async Task<IActionResult> Index(int page=1)
         {
             var query = 
                 from movie in _context.Movies
@@ -29,20 +32,28 @@ namespace WebApplication1.Controllers
                 join productionCompany in _context.ProductionCompanies on movieCompany.CompanyId equals productionCompany.CompanyId into productionGroup
                 from productionCompany in productionGroup.DefaultIfEmpty() 
                 group new { movie, productionCompany } by new { productionCompany.CompanyId, productionCompany.CompanyName } into grouped
-                select new MovieViewModel()
+                select new MovieViewModelEntity()
                 {
                     company_id = grouped.Key.CompanyId, 
                     company_name = grouped.Key.CompanyName,
                     movies_count = grouped.Count(g => g.movie != null),
                     company_budget = grouped.Sum(g => (long)g.movie.Budget) 
                 };
-            var resultList = query.ToList();
+            var resultList = await query.OrderByDescending(o=>o.movies_count).Skip((page - 1)*size).Take(size).ToListAsync();
             
-            return View(resultList);
+            var totalPages = (int)Math.Ceiling(await query.CountAsync() / (double)size);
+            
+            return View(new MovieViewModel(){MovieModels = resultList, current_page = page, total_pages = totalPages});
         }
         
-        public async Task<IActionResult> VideoList(int? company_id, string? company_name)
+        public async Task<IActionResult> VideoList(int? company_id, string? company_name, int page=1)
         {
+            if (company_id is null)
+                company_id = company_id_curr;
+            if (company_name is null)
+                company_name = company_name_curr;
+            company_id_curr = company_id;
+            company_name_curr = company_name;
             var query = _context.Movies
                 .Join(
                     _context.MovieCompanies,
@@ -51,7 +62,7 @@ namespace WebApplication1.Controllers
                     (movie, movieCompany) => new { Movie = movie, MovieCompany = movieCompany } 
                 )
                 .Where(joined => joined.MovieCompany.CompanyId == company_id) 
-                .Select(joined => new VideoListViewModel
+                .Select(joined => new VideoListViewModelEntity()
                 {
                     title = joined.Movie.Title,
                     popularity = joined.Movie.Popularity,
@@ -63,9 +74,11 @@ namespace WebApplication1.Controllers
                     movie_id = joined.Movie.MovieId
                     
                 });
-            var resultList = query.ToList();
+            var resultList = await query.OrderByDescending(o=>o.movie_id).Skip((page - 1)*size).Take(size).ToListAsync();
             
-            return View(resultList);
+            var totalPages = (int)Math.Ceiling(await query.CountAsync() / (double)size);
+            
+            return View(new VideoListViewModel(){VideoListModels = resultList, current_page = page, total_pages = totalPages} );
         }
         
         public async Task<IActionResult> Keywords(int? movie_id)

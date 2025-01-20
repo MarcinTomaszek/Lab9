@@ -1,53 +1,53 @@
-﻿@model System.Collections.Generic.List<WebApplication1.Models.Movies.VideoListViewModel>
+﻿@model WebApplication1.Models.Movies.VideoListViewModel
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>"@Html.DisplayFor(m=>Model[0].comp_name)" Movies</h1>
+@* <h1>"@Html.DisplayFor(m=>Model.VideoListModels[0].comp_name)" Movies</h1> *@
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                Title
-            </th>
-            <th>
-                Popularity
-            </th>
-            <th>
-                Revenue
-            </th>
-            <th>
-                Runtime
-            </th>
-            <th>
-                Average Vote
-            </th>
-            <th>
-                Number of Votes
-            </th>
-            <th>
+    <tr>
+        <th>
+            Title
+        </th>
+        <th>
+            Popularity
+        </th>
+        <th>
+            Revenue
+        </th>
+        <th>
+            Runtime
+        </th>
+        <th>
+            Average Vote
+        </th>
+        <th>
+            Number of Votes
+        </th>
+        <th>
                 
-            </th>
-        </tr>
+        </th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model.VideoListModels) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.title)
             </td>
             <td>
-               @Html.DisplayFor(modelItem => item.popularity)
+                @Html.DisplayFor(modelItem => item.popularity)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.revenue)
             </td>
             <td>
-               @Html.DisplayFor(modelItem => item.runtime)
+                @Html.DisplayFor(modelItem => item.runtime)
             </td>
             <td>
-               @Html.DisplayFor(modelItem => item.votes_avg)
+                @Html.DisplayFor(modelItem => item.votes_avg)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.votes_count)
@@ -56,6 +56,47 @@
                 <a asp-action="Keywords" asp-route-movie_id="@item.movie_id ">Keywords</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
+
+<div class="pagination">
+    @if (Model.total_pages > 1)
+    {
+        <a href="@Url.Action("VideoList", new { page = 1 })">Początek</a>
+
+        @if (Model.current_page > 1)
+        {
+            <a href="@Url.Action("VideoList", new { page = Model.current_page - 1 })">Poprzednia</a>
+        }
+
+        int maxPagesToShow = 5;
+        int startPage = Math.Max(1, Model.current_page - 2);
+        int endPage = Math.Min(Model.total_pages, startPage + maxPagesToShow - 1);
+
+        for (int i = startPage; i <= endPage; i++)
+        {
+            if (i == Model.current_page)
+            {
+                <span class="current-page">@i</span>
+            }
+            else
+            {
+                <a href="@Url.Action("VideoList", new { page = i })">@i</a>
+            }
+        }
+
+        if (endPage < Model.total_pages)
+        {
+            <a href="@Url.Action("VideoList", new { page = Model.total_pages })">@Model.total_pages</a>
+        }
+
+        @if (Model.current_page < Model.total_pages)
+        {
+            <a href="@Url.Action("VideoList", new { page = Model.current_page + 1 })">Następna</a>
+        }
+
+        <a href="@Url.Action("VideoList", new { page = Model.total_pages })">Ostatnia</a>
+    }
+</div>
+
