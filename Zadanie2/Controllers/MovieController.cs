@@ -20,15 +20,15 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
-        // GET: MovieControler
+        
         public async Task<IActionResult> Index(int page =1 , int size =20)
         {
             var query = 
                 from movie in _context.Movies
                 join movieCompany in _context.MovieCompanies on movie.MovieId equals movieCompany.MovieId
                 join productionCompany in _context.ProductionCompanies on movieCompany.CompanyId equals productionCompany.CompanyId into productionGroup
-                from productionCompany in productionGroup.DefaultIfEmpty() // LEFT JOIN
-                group new { movie, productionCompany } by new { productionCompany.CompanyId, productionCompany.CompanyName } into grouped // Group by both CompanyId and CompanyName
+                from productionCompany in productionGroup.DefaultIfEmpty() 
+                group new { movie, productionCompany } by new { productionCompany.CompanyId, productionCompany.CompanyName } into grouped
                 select new MovieViewModel()
                 {
                     company_id = grouped.Key.CompanyId, 
