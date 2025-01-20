@@ -74,7 +74,7 @@ namespace WebApplication1.Controllers
                     movie_id = joined.Movie.MovieId
                     
                 });
-            var resultList = await query.OrderByDescending(o=>o.movie_id).Skip((page - 1)*size).Take(size).ToListAsync();
+            var resultList = await query.OrderByDescending(o=>o.popularity).Skip((page - 1)*size).Take(size).ToListAsync();
             
             var totalPages = (int)Math.Ceiling(await query.CountAsync() / (double)size);
             

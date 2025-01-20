@@ -4,76 +4,71 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Company List</h1>
 
-<h1>Company List</h1>
-<table class="table">
-    <thead>
-    <tr>
-        <th>
-            Company Name
-        </th>
-        <th>
-            Number of Films Released
-        </th>
-        <th>
-            Summed Budget of all Releases
-        </th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.MovieModels) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.company_name)
-            </td>
-            <td>
-                <a asp-action="VideoList" asp-route-company_id="@item.company_id" asp-route-company_name="@item.company_name"> @Html.DisplayFor(modelItem => item.movies_count)</a>  
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.company_budget)
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
-
-<div class="pagination">
-    @if (Model.total_pages > 1)
-    {
-        <a href="@Url.Action("Index", new { page = 1 })">Początek</a>
-
-        @if (Model.current_page > 1)
-        {
-            <a href="@Url.Action("Index", new { page = Model.current_page - 1 })">Poprzednia</a>
-        }
-
-        int maxPagesToShow = 5;
-        int startPage = Math.Max(1, Model.current_page - 2);
-        int endPage = Math.Min(Model.total_pages, startPage + maxPagesToShow - 1);
-
-        for (int i = startPage; i <= endPage; i++)
-        {
-            if (i == Model.current_page)
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Company Name</th>
+                <th>Number of Films Released</th>
+                <th>Summed Budget of All Releases</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.MovieModels)
             {
-                <span class="current-page">@i</span>
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.company_name)</td>
+                    <td>
+                        <a class="btn btn-link p-0 text-primary" 
+                           asp-action="VideoList" 
+                           asp-route-company_id="@item.company_id" 
+                           asp-route-company_name="@item.company_name">
+                            @Html.DisplayFor(modelItem => item.movies_count)
+                        </a>
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.company_budget)</td>
+                </tr>
             }
-            else
+        </tbody>
+    </table>
+
+    <div class="pagination mt-4 d-flex justify-content-center">
+        @if (Model.total_pages > 1)
+        {
+            @if (Model.current_page > 3)
             {
-                <a href="@Url.Action("Index", new { page = i })">@i</a>
+                <a class="btn btn-outline-primary mx-1" href="@Url.Action("Index", new { page = 1 })">First</a>
+                <span class="mx-1">...</span>
+            }
+
+
+            {
+                int maxPagesToShow = 5;
+                int startPage = Math.Max(1, Model.current_page - 2);
+                int endPage = Math.Min(Model.total_pages, startPage + maxPagesToShow - 1);
+
+                for (int i = startPage; i <= endPage; i++)
+                {
+                    if (i == Model.current_page)
+                    {
+                        <span class="btn btn-primary mx-1 disabled">@i</span>
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-primary mx-1" href="@Url.Action("Index", new { page = i })">@i</a>
+                    }
+                }
+            }
+
+            
+            if (Model.current_page < Model.total_pages - 2)
+            {
+                <span class="mx-1">...</span>
+                <a class="btn btn-outline-primary mx-1" href="@Url.Action("Index", new { page = Model.total_pages })">Last</a>
             }
         }
-
-        if (endPage < Model.total_pages)
-        {
-            <a href="@Url.Action("Index", new { page = Model.total_pages })">@Model.total_pages</a>
-        }
-
-        @if (Model.current_page < Model.total_pages)
-        {
-            <a href="@Url.Action("Index", new { page = Model.current_page + 1 })">Następna</a>
-        }
-
-        <a href="@Url.Action("Index", new { page = Model.total_pages })">Ostatnia</a>
-    }
+    </div>
 </div>
