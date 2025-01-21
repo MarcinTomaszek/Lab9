@@ -1,0 +1,31 @@
+﻿@model WebApplication1.Models.Authorization.RegisterViewModel
+
+@{
+    ViewBag.Title = "register";
+    Layout = "_Layout";
+}
+
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Register</h1>
+    <form asp-action="Register" method="post" class="border p-4 shadow-sm rounded bg-light">
+        <div class="form-group mb-3">
+            <label asp-for="Username" class="form-label fw-bold">Username</label>
+            <input asp-for="Username" class="form-control" placeholder="Enter your username" />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="Password" class="form-label fw-bold">Password</label>
+            <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="ConfirmPassword" class="form-label fw-bold">Confirm Password</label>
+            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm your password" />
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+        <div class="form-group text-center mt-4">
+            <button type="submit" class="btn btn-primary px-5 py-2">Register</button>
+        </div>
+    </form>
+</div>

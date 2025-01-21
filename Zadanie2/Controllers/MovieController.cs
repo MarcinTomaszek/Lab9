@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -106,11 +107,12 @@ namespace WebApplication1.Controllers
             return View(query);
         }
         
+        [Authorize]
         public IActionResult CreateKeyword()
         {
             return View(new KeywordCreateForm());
         }
-        
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateKeyword(KeywordCreateForm model)
         {
